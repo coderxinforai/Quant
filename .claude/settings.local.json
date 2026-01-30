@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3:*)",
+      "Bash(ping:*)",
+      "Bash(ssh:*)",
+      "Bash(curl:*)",
+      "Bash(pip3 show:*)",
+      "Bash(ls:*)",
+      "Bash(kill:*)",
+      "Bash(source:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

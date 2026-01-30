@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh wsl \"ls /mnt/o/MinuteData/ | head -30\")",
+      "Bash(ssh wsl \"ls /mnt/o/MinuteData/min/ | head -30\")",
+      "Bash(ssh wsl \"ls /mnt/o/MinuteData/after/ | head -30\")",
+      "Bash(ssh wsl \"ls /mnt/o/MinuteData/before/ | head -30\")",
+      "Bash(ssh wsl \"ls /mnt/o/MinuteData/min/2024_1min/ | head -20\")",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "WebFetch(domain:query1.finance.yahoo.com)",
+      "WebFetch(domain:push2his.eastmoney.com)"
+    ]
+  }
+}
