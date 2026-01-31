@@ -1,6 +1,9 @@
 """ClickHouse数据库客户端"""
 import clickhouse_connect
 from app.core.config import settings
+from app.core.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class ClickHouseClient:
@@ -17,6 +20,7 @@ class ClickHouseClient:
     def connect(self):
         """建立数据库连接"""
         if self._client is None:
+            logger.info(f"正在连接ClickHouse数据库: {settings.CH_HOST}:{settings.CH_PORT}/{settings.CH_DATABASE}")
             self._client = clickhouse_connect.get_client(
                 host=settings.CH_HOST,
                 port=settings.CH_PORT,
@@ -24,7 +28,7 @@ class ClickHouseClient:
                 username=settings.CH_USER,
                 password=settings.CH_PASSWORD
             )
-            print(f"已连接到ClickHouse数据库: {settings.CH_HOST}:{settings.CH_PORT}/{settings.CH_DATABASE}")
+            logger.info("ClickHouse数据库连接成功")
         return self._client
 
     def get_client(self):
@@ -48,7 +52,7 @@ class ClickHouseClient:
         if self._client:
             self._client.close()
             self._client = None
-            print("ClickHouse连接已关闭")
+            logger.info("ClickHouse连接已关闭")
 
 
 # 全局单例

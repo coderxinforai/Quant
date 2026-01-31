@@ -2,6 +2,9 @@
 from app.db.clickhouse import ClickHouseClient
 from app.schemas.kline import KLineResponse, KLineData, StockBasicInfo
 from app.services.stock_service import StockService
+from app.core.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class KLineService:
@@ -61,6 +64,13 @@ class KLineService:
         Returns:
             KLineResponse: K线数据
         """
+        logger.info(f"获取K线数据: code={code}, start={start_date}, end={end_date}, adj_type={adj_type}")
+
+        # 清理参数（防止SQL注入）
+        code = code.replace("'", "").replace(";", "").replace("--", "")
+        start_date = start_date.replace("'", "").replace(";", "").replace("--", "")
+        end_date = end_date.replace("'", "").replace(";", "").replace("--", "")
+
         # 获取价格列
         price_cols = self._get_price_columns(adj_type)
 
@@ -79,9 +89,11 @@ class KLineService:
             ORDER BY trade_date
         """
 
+        logger.debug(f"执行查询: {query[:200]}...")
         df = self.db.query_df(query)
 
         if df.empty:
+            logger.warning(f"未找到数据: code={code}, start={start_date}, end={end_date}")
             raise ValueError(f"未找到股票 {code} 在 {start_date} 至 {end_date} 的数据")
 
         # 获取股票名称
@@ -101,6 +113,8 @@ class KLineService:
             )
             for _, row in df.iterrows()
         ]
+
+        logger.info(f"成功获取 {len(klines)} 条K线数据")
 
         return KLineResponse(
             stock_info=StockBasicInfo(code=code, name=stock_name),

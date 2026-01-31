@@ -39,8 +39,8 @@ export const KLinePage: React.FC = () => {
 
     logger.info(`主页面: 开始获取K线数据 - ${stockCode}`);
 
-    // 查询所有可用数据（从2010年到2025年底）
-    const startDate = '2010-01-01';
+    // 查询所有可用数据（从2000年到2025年底）
+    const startDate = '2000-01-01';
     const endDate = '2025-12-31';
 
     logger.info(`主页面: 查询参数 - 股票:${stockCode}, 日期:${startDate}~${endDate}`);

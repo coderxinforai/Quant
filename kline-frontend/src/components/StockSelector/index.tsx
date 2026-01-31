@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { Select } from 'antd';
 import { stockApi } from '../../api/stock';
 import type { Stock } from '../../types/stock';
@@ -10,7 +10,7 @@ interface StockSelectorProps {
   onChange?: (code: string, stock: Stock) => void;
 }
 
-export const StockSelector: React.FC<StockSelectorProps> = ({ value, onChange }) => {
+export const StockSelector: React.FC<StockSelectorProps> = memo(({ value, onChange }) => {
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -64,4 +64,4 @@ export const StockSelector: React.FC<StockSelectorProps> = ({ value, onChange })
       }))}
     />
   );
-};
+});

@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import * as echarts from 'echarts';
 import type { ECharts } from 'echarts';
 import type { KLine } from '../../types/kline';
 import { getKLineOption } from './options';
-import { Spin, Empty } from 'antd';
+import { Skeleton, Empty } from 'antd';
 import { logger } from '../../store/useLogStore';
 
 interface KLineChartProps {
@@ -12,7 +12,7 @@ interface KLineChartProps {
   loading?: boolean;
 }
 
-export const KLineChart: React.FC<KLineChartProps> = ({
+export const KLineChart: React.FC<KLineChartProps> = memo(({
   data,
   stockName = 'K线图',
   loading = false
@@ -64,14 +64,8 @@ export const KLineChart: React.FC<KLineChartProps> = ({
 
   if (loading) {
     return (
-      <div style={{
-        width: '100%',
-        height: '600px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <Spin size="large" tip="加载中..." />
+      <div style={{ padding: '20px' }}>
+        <Skeleton active paragraph={{ rows: 12 }} />
       </div>
     );
   }
@@ -91,4 +85,13 @@ export const KLineChart: React.FC<KLineChartProps> = ({
   }
 
   return <div ref={chartRef} style={{ width: '100%', height: '600px' }} />;
-};
+}, (prevProps, nextProps) => {
+  // 自定义比较函数，优化渲染性能
+  return (
+    prevProps.loading === nextProps.loading &&
+    prevProps.stockName === nextProps.stockName &&
+    prevProps.data.length === nextProps.data.length &&
+    prevProps.data[0]?.date === nextProps.data[0]?.date &&
+    prevProps.data[prevProps.data.length - 1]?.date === nextProps.data[nextProps.data.length - 1]?.date
+  );
+});

@@ -1,0 +1,21 @@
+[Unit]
+Description=KLine Backend Service
+After=network.target
+
+[Service]
+Type=notify
+User=lee
+Group=lee
+WorkingDirectory=/home/lee/kline-backend
+Environment="PATH=/home/lee/kline-backend/venv/bin"
+ExecStart=/home/lee/kline-backend/venv/bin/gunicorn app.main:app \
+  -w 4 \
+  -k uvicorn.workers.UvicornWorker \
+  -b 0.0.0.0:8000 \
+  --access-logfile /home/lee/kline-backend/logs/gunicorn-access.log \
+  --error-logfile /home/lee/kline-backend/logs/gunicorn-error.log
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
