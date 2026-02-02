@@ -128,24 +128,55 @@ start_all() {
     fi
     echo ""
 
-    # 启动后端和前端（需要在不同终端）
-    print_header "后续步骤"
-    echo ""
-    print_info "由于后端和前端需要独立的终端窗口，请在新终端中运行:"
-    echo ""
-    echo "  ${GREEN}后端:${NC}"
-    echo "    cd $SCRIPT_DIR"
-    echo "    ./start-debug.sh backend"
-    echo ""
-    echo "  ${GREEN}前端:${NC}"
-    echo "    cd $SCRIPT_DIR"
-    echo "    ./start-debug.sh frontend"
-    echo ""
-    echo "  ${GREEN}或同时启动（需要tmux或screen）:${NC}"
-    echo "    tmux new-session -d -s quant -c $SCRIPT_DIR './start-debug.sh backend'"
-    echo "    tmux new-window -t quant -c $SCRIPT_DIR './start-debug.sh frontend'"
-    echo ""
-    print_success "SSH隧道已启动，请按上述步骤启动后端和前端"
+    # 检查是否有 tmux
+    if command -v tmux &> /dev/null; then
+        print_header "使用 tmux 启动后端和前端"
+        echo ""
+
+        # 创建 tmux 会话并启动后端
+        print_info "在 tmux 中启动后端..."
+        tmux new-session -d -s quant -c "$SCRIPT_DIR" "$SCRIPT_DIR/start-debug.sh backend"
+        sleep 2
+
+        # 创建新窗口启动前端
+        print_info "在 tmux 中启动前端..."
+        tmux new-window -t quant -c "$SCRIPT_DIR" "$SCRIPT_DIR/start-debug.sh frontend"
+        sleep 2
+
+        echo ""
+        print_header "所有服务已启动"
+        echo ""
+        print_success "SSH 隧道、后端、前端已全部启动"
+        echo ""
+        print_info "查看日志和交互:"
+        echo "  ${GREEN}查看所有输出:${NC}"
+        echo "    tmux attach -t quant"
+        echo ""
+        echo "  ${GREEN}停止所有服务:${NC}"
+        echo "    ./stop-debug.sh"
+        echo ""
+        echo "  ${GREEN}访问应用:${NC}"
+        echo "    http://localhost:5173"
+        echo ""
+    else
+        # 没有 tmux，给出手动启动指导
+        print_header "后续步骤"
+        echo ""
+        print_info "tmux 未安装，请在新终端中分别运行:"
+        echo ""
+        echo "  ${GREEN}后端 (新终端 2):${NC}"
+        echo "    cd $SCRIPT_DIR"
+        echo "    ./start-debug.sh backend"
+        echo ""
+        echo "  ${GREEN}前端 (新终端 3):${NC}"
+        echo "    cd $SCRIPT_DIR"
+        echo "    ./start-debug.sh frontend"
+        echo ""
+        echo "  ${GREEN}安装 tmux 以自动启动所有服务:${NC}"
+        echo "    brew install tmux"
+        echo ""
+        print_success "SSH 隧道已启动，ClickHouse 连接正常"
+    fi
 }
 
 # 验证组件参数
