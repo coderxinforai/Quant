@@ -10,12 +10,14 @@ interface KLineChartProps {
   data: KLine[];
   stockName?: string;
   loading?: boolean;
+  period?: string;
 }
 
 export const KLineChart: React.FC<KLineChartProps> = memo(({
   data,
   stockName = 'K线图',
-  loading = false
+  loading = false,
+  period = 'day'
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<ECharts | undefined>(undefined);
@@ -37,7 +39,7 @@ export const KLineChart: React.FC<KLineChartProps> = memo(({
     // 设置图表选项
     if (data.length > 0) {
       logger.info(`K线图: 渲染图表 - 日期范围 ${data[0].date} ~ ${data[data.length - 1].date}`);
-      const option = getKLineOption(data, stockName);
+      const option = getKLineOption(data, stockName, period);
       chartInstance.current.setOption(option, true);
       logger.success('K线图: 渲染完成');
     } else {
@@ -53,7 +55,7 @@ export const KLineChart: React.FC<KLineChartProps> = memo(({
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [data, stockName]);
+  }, [data, stockName, period]);
 
   // 组件卸载时销毁实例
   useEffect(() => {
@@ -90,6 +92,7 @@ export const KLineChart: React.FC<KLineChartProps> = memo(({
   return (
     prevProps.loading === nextProps.loading &&
     prevProps.stockName === nextProps.stockName &&
+    prevProps.period === nextProps.period &&
     prevProps.data.length === nextProps.data.length &&
     prevProps.data[0]?.date === nextProps.data[0]?.date &&
     prevProps.data[prevProps.data.length - 1]?.date === nextProps.data[nextProps.data.length - 1]?.date

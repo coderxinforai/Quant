@@ -1,6 +1,15 @@
 """K线相关Schema"""
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional, Dict, Any
+from enum import Enum
+
+
+class KLinePeriod(str, Enum):
+    """K线周期枚举"""
+    DAY = "day"
+    WEEK = "week"
+    MONTH = "month"
+    YEAR = "year"
 
 
 class KLineData(BaseModel):
@@ -25,3 +34,5 @@ class KLineResponse(BaseModel):
     stock_info: StockBasicInfo
     klines: List[KLineData]
     count: int
+    period: str = "day"
+    indicators: Optional[Dict[str, Any]] = None

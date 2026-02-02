@@ -1,15 +1,31 @@
 import type { EChartsOption } from 'echarts';
 import type { KLine } from '../../types/kline';
 
-export const getKLineOption = (data: KLine[], stockName: string): EChartsOption => {
+export const getKLineOption = (data: KLine[], stockName: string, period: string = 'day'): EChartsOption => {
   // 提取数据
   const dates = data.map((d) => d.date);
   const klineData = data.map((d) => [d.open, d.close, d.low, d.high]);
   const volumeData = data.map((d) => d.volume);
 
+  // 周期标签映射
+  const periodLabel: Record<string, string> = {
+    '1min': '1分钟',
+    '5min': '5分钟',
+    '15min': '15分钟',
+    '30min': '30分钟',
+    '60min': '60分钟',
+    day: '日K',
+    week: '周K',
+    month: '月K',
+    year: '年K',
+  };
+
+  // 判断是否为分钟K线
+  const isMinutePeriod = period.includes('min');
+
   return {
     title: {
-      text: stockName,
+      text: `${stockName} - ${periodLabel[period] || '日K'}`,
       left: 'center',
     },
     tooltip: {
@@ -63,6 +79,20 @@ export const getKLineOption = (data: KLine[], stockName: string): EChartsOption 
         type: 'category',
         data: dates,
         gridIndex: 1,
+        axisLabel: {
+          // 分钟K线显示时间，日K及以上显示日期
+          formatter: isMinutePeriod
+            ? (value: string) => {
+                // 分钟K线格式: "2024-01-15 09:35:00" -> "09:35"
+                const parts = value.split(' ');
+                if (parts.length > 1) {
+                  const timePart = parts[1];
+                  return timePart.substring(0, 5); // HH:mm
+                }
+                return value;
+              }
+            : undefined,
+        },
       },
     ],
     yAxis: [
@@ -85,15 +115,15 @@ export const getKLineOption = (data: KLine[], stockName: string): EChartsOption 
       {
         type: 'inside',
         xAxisIndex: [0, 1],
-        start: 80,  // 默认显示最近20%的数据
+        start: isMinutePeriod ? 0 : 80,  // 分钟K线显示全部，日K及以上显示最近20%
         end: 100,
-        minSpan: 5,  // 最小显示5%
-        maxSpan: 100, // 最大显示100%
+        minSpan: 5,
+        maxSpan: 100,
       },
       {
         type: 'slider',
         xAxisIndex: [0, 1],
-        start: 80,  // 默认显示最近20%的数据
+        start: isMinutePeriod ? 0 : 80,
         end: 100,
         bottom: 10,
         height: 20,

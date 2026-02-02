@@ -38,7 +38,7 @@ class StockService:
                     code,
                     any(name) AS name,
                     count() AS records
-                FROM stock.minute_kline
+                FROM minute_kline
                 GROUP BY code
                 HAVING code LIKE '%{keyword}%' OR name LIKE '%{keyword}%'
                 ORDER BY code
@@ -50,7 +50,7 @@ class StockService:
                     code,
                     any(name) AS name,
                     count() AS records
-                FROM stock.minute_kline
+                FROM minute_kline
                 GROUP BY code
                 ORDER BY code
                 LIMIT {limit}
