@@ -1,6 +1,27 @@
 # K线图系统 - 本地调试快速指南
 
-## 快速开始（30秒）
+## 快速开始
+
+### 方案 1：单窗口启动（推荐）⭐
+
+```bash
+# 一个命令启动所有服务
+./start-simple.sh
+
+# 打开浏览器访问
+# http://localhost:5173
+
+# 停止服务：按 Ctrl-C
+```
+
+**特点：**
+- ✅ 只需一个终端窗口
+- ✅ 前端日志实时可见
+- ✅ SSH隧道和后端在后台运行
+- ✅ 自动清理服务（Ctrl-C 时）
+- ✅ 后端日志保存到 `kline-backend/server.log`
+
+### 方案 2：多窗口启动（分离管理）
 
 ```bash
 # 终端 1: 启动SSH隧道
@@ -16,8 +37,21 @@
 # http://localhost:5173
 ```
 
+**特点：**
+- ✅ 灵活控制每个服务
+- ✅ 可分别重启各组件
+- ✅ 易于查看各服务日志
+- ✅ 需要多个终端窗口
+
 ## 停止服务
 
+### 使用 start-simple.sh 启动时
+```bash
+# 按 Ctrl-C 停止前端
+# 其他服务会自动清理
+```
+
+### 使用 start-debug.sh 启动时
 ```bash
 # 任意终端执行（会停止所有服务）
 ./stop-debug.sh
@@ -93,6 +127,25 @@ tail -f kline-backend/server.log
 ```
 
 ## 脚本说明
+
+### start-simple.sh
+
+一键启动所有服务（推荐）
+
+```bash
+./start-simple.sh
+```
+
+**工作流程：**
+1. 启动 SSH 隧道（后台）
+2. 启动后端（后台，日志写入文件）
+3. 启动前端（前台，实时显示日志）
+
+**特点：**
+- 只需一个终端窗口
+- Ctrl-C 停止时自动清理所有服务
+- 后端日志保存到 `kline-backend/server.log`
+- 查看后端日志：`tail -f kline-backend/server.log`
 
 ### start-debug.sh
 
