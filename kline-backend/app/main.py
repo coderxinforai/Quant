@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.api.endpoints import stock, kline
+from app.api.endpoints import stock, kline, compare, backtest
 from app.core.ssh_tunnel import tunnel_manager
 from app.db.clickhouse import db_client
 from app.db.redis import redis_client
@@ -100,6 +100,8 @@ app.add_middleware(LoggingMiddleware)
 # 注册路由
 app.include_router(stock.router, prefix="/api/stocks", tags=["stocks"])
 app.include_router(kline.router, prefix="/api/kline", tags=["kline"])
+app.include_router(compare.router, prefix="/api/compare", tags=["compare"])
+app.include_router(backtest.router, prefix="/api/backtest", tags=["backtest"])
 
 
 @app.get("/")

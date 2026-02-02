@@ -33,3 +33,27 @@ async def list_stocks(
         "message": "success",
         "data": stocks.dict()
     }
+
+
+@router.get("/date-range", response_model=dict)
+async def get_stock_date_range(
+    code: str = Query(..., description="股票代码"),
+    db: ClickHouseClient = Depends(get_db)
+):
+    """
+    获取股票的数据时间范围
+
+    Args:
+        code: 股票代码
+
+    Returns:
+        日期范围 {'start_date': '2020-01-01', 'end_date': '2024-12-31'}
+    """
+    service = StockService(db)
+    date_range = service.get_stock_date_range(code)
+
+    return {
+        "code": 0,
+        "message": "success",
+        "data": date_range
+    }

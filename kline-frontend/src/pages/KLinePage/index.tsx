@@ -182,7 +182,7 @@ export const KLinePage: React.FC = () => {
                 setTradeDate(defaultDate);
               }
               if (selectedStock) {
-                fetchKLineData(selectedStock, adjType, val, tradeDate);
+                fetchKLineData(selectedStock, adjType, val, tradeDate || undefined);
               }
             }}
           />
@@ -209,7 +209,7 @@ export const KLinePage: React.FC = () => {
             onChange={(val) => {
               setAdjType(val);
               if (selectedStock) {
-                fetchKLineData(selectedStock, val, period, tradeDate);
+                fetchKLineData(selectedStock, val, period, tradeDate || undefined);
               }
             }}
           />

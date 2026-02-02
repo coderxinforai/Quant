@@ -98,3 +98,39 @@ class StockService:
             return name
         logger.warning(f"未找到股票名称: code={code}")
         return code
+
+    def get_stock_date_range(self, code: str) -> dict:
+        """
+        获取股票的数据时间范围
+
+        Args:
+            code: 股票代码
+
+        Returns:
+            dict: {'start_date': '2020-01-01', 'end_date': '2024-12-31'}
+        """
+        # 清理股票代码（防止SQL注入）
+        code = code.replace("'", "").replace(";", "").replace("--", "")
+
+        query = f"""
+            SELECT
+                min(trade_date) AS start_date,
+                max(trade_date) AS end_date
+            FROM stock.minute_kline
+            WHERE code = '{code}'
+        """
+        logger.debug(f"查询股票日期范围: code={code}")
+        result = self.db.query(query)
+        if result.result_rows and result.result_rows[0][0]:
+            start_date = str(result.result_rows[0][0])
+            end_date = str(result.result_rows[0][1])
+            logger.info(f"股票 {code} 日期范围: {start_date} ~ {end_date}")
+            return {
+                "start_date": start_date,
+                "end_date": end_date
+            }
+        logger.warning(f"未找到股票 {code} 的日期范围")
+        return {
+            "start_date": None,
+            "end_date": None
+        }
