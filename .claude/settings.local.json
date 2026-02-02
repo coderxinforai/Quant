@@ -13,7 +13,14 @@
       "Bash(source:*)",
       "Bash(python:*)",
       "Bash(pip install:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(uvicorn:*)",
+      "Bash(npm run dev:*)",
+      "Bash(/Users/lixinfei/workspace/project/Quant/kline-backend/venv/bin/uvicorn:*)",
+      "Bash(/Users/lixinfei/workspace/project/Quant/kline-backend/venv/bin/python -m uvicorn:*)",
+      "Bash(bash:*)",
+      "Bash(bash -n:*)",
+      "Bash(git add:*)"
     ]
   }
 }
