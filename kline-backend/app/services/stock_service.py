@@ -15,7 +15,7 @@ class StockService:
 
     def search_stocks(self, keyword: Optional[str] = None, limit: int = 50) -> StockListResponse:
         """
-        搜索股票列表
+        搜索股票列表（从 stock_info 表查询，性能优化）
 
         Args:
             keyword: 搜索关键词（股票代码或名称）
@@ -32,15 +32,14 @@ class StockService:
             keyword = keyword.replace("'", "").replace(";", "").replace("--", "")
 
         if keyword:
-            # 使用HAVING子句进行过滤
+            # 从 stock_info 表查询（性能优化）
             query = f"""
                 SELECT
                     code,
-                    any(name) AS name,
-                    count() AS records
-                FROM minute_kline
-                GROUP BY code
-                HAVING code LIKE '%{keyword}%' OR name LIKE '%{keyword}%'
+                    name,
+                    records
+                FROM stock.stock_info
+                WHERE code LIKE '%{keyword}%' OR name LIKE '%{keyword}%'
                 ORDER BY code
                 LIMIT {limit}
             """
@@ -48,10 +47,9 @@ class StockService:
             query = f"""
                 SELECT
                     code,
-                    any(name) AS name,
-                    count() AS records
-                FROM minute_kline
-                GROUP BY code
+                    name,
+                    records
+                FROM stock.stock_info
                 ORDER BY code
                 LIMIT {limit}
             """
